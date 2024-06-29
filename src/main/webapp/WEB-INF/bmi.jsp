@@ -1,12 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List"%>
-<%@ page import="com.example.BmiServlet.DisplayEntry"%>
-
+<%@ page import="com.example.BmiServlet.DisplayEntry" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ResourceBundle" %>
 <%
-// 別途、このプロジェクトのJavaのビルドパスに
-// src/main/resources を追加しておく必要があるため注意
+// プロジェクトのJavaのビルドパスに src/main/resources を追加しておく必要があります。
 var locale = request.getLocale();
-var mes = java.util.ResourceBundle.getBundle("messages", locale);
+var mes = ResourceBundle.getBundle("messages", locale);
 %>
 <!DOCTYPE html>
 <html>
