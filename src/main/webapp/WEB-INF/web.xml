@@ -8,7 +8,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>BmiServlet</servlet-name>
-    <url-pattern>/</url-pattern>
+    <url-pattern>/app</url-pattern>
   </servlet-mapping>
   <display-name>bmi-calc</display-name>
   <welcome-file-list>
