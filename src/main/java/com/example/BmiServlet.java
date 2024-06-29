@@ -3,8 +3,7 @@ package com.example;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import com.example.model.Model;
+import java.util.logging.Logger;
 
 import jakarta.json.bind.JsonbException;
 import jakarta.servlet.ServletException;
@@ -14,21 +13,19 @@ import jakarta.servlet.http.HttpServletResponse;
 
 // コントローラを担当するサーブレットです。
 public class BmiServlet extends HttpServlet {
-	private static final Model model = new Model();
-
 	private static final double METER_FEET = 3.2808;
 	private static final double KG_POUNDS = 2.2046;
-
+	private static final Logger logger = Logger.getLogger(BmiServlet.class.getName());
+	private static final Model model = new Model();	
 
 	// BMIに関する値をJSPへ渡すためだけに用いる表示用recordです。
-	// JSP側でimportするためpublic staticにしています。
-	public static record DisplayEntry(String createdDate, String height, String weight, String bmi) {		
+	public record DisplayEntry(String createdDate, String height, String weight, String bmi) {		
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String language = request.getLocale().getLanguage(); // ja, en など
-		System.out.println("language: " + language);
+		logger.info("Language: " + language);
 		
 		try {
 			// Modelから過去の結果を取得します。
@@ -47,13 +44,17 @@ public class BmiServlet extends HttpServlet {
 			// データをViewに渡すため、リクエストスコープへセットします。
 			request.setAttribute("displayEntries", displayEntries);
 		} catch (IOException e) {
-			e.printStackTrace();
+			// ファイルが壊れている場合などに発生。大きな問題です。
+			logger.severe("IOException: " + e.getMessage());
 			request.setAttribute("error", "io_error");
 		} catch (JsonbException e) {
-			e.printStackTrace();
+			// JSONの変換に失敗した場合に発生。
+			// JSONファイルを修正するか削除する必要があるので大きな問題です。
+			logger.severe("JsonbException: " + e.getMessage());
 			request.setAttribute("error", "json_error");
 		} catch (Exception e) {
-			e.printStackTrace();
+			// その他の例外が発生した場合
+			logger.severe("Exception: " + e.getMessage());
 			request.setAttribute("error", "unknown_error");
 		} finally {
 			// nullの場合は値を設定しておきます。
@@ -89,17 +90,19 @@ public class BmiServlet extends HttpServlet {
 			request.setAttribute("currentEntry", currentEntry);
 		} catch (NumberFormatException e) {
 			// 入力が数値でない場合に発生
+			// ユーザに再入力してもらえば良いだけなので、大きな問題ではありません。
+			logger.warning("NumberFormatException: " + e.getMessage());
 			request.setAttribute("error", "number_format_error");
 		} catch (JsonbException e) {
-			// JSONの変換に失敗した場合に発生
-			e.printStackTrace();
+			logger.severe("JsonbException: " + e.getMessage());
 			request.setAttribute("error", "json_error");
 		} catch (IOException e) {
-			// ファイルが読み取り専用になっている場合などに発生
-			e.printStackTrace();
+			// ファイルが壊れていたり、読み取り専用になっている場合などに発生
+			// 大きな問題です。
+			logger.severe("IOException: " + e.getMessage());
 			request.setAttribute("error", "io_error");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.severe("Exception: " + e.getMessage());
 			request.setAttribute("error", "unknown_error");
 		} 
 		// この後の処理はdoGetメソッドと同じなので、doGetに任せます。
