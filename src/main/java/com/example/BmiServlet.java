@@ -9,8 +9,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /**
  * Servlet implementation class BmiServlet
@@ -22,13 +20,7 @@ public class BmiServlet extends HttpServlet {
 	private final double KG_POUNDS = 2.2046;
 	
 	// BMIに関する値をJSPへ渡すためだけに用いる、Lombokで作成したDTOクラスです。
-	@Getter
-	@AllArgsConstructor
-	public static class BmiDTO {
-		private String height;
-		private String weight;
-		private String bmi;
-		private String createdDate;
+	public static record BmiDTO (String height, String weight, String bmi, String createdDate) {
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

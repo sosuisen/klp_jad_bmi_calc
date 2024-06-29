@@ -18,6 +18,10 @@ public class BmiManager {
 	JsonbConfig config = new JsonbConfig().withFormatting(true);
 	Jsonb jsonb = JsonbBuilder.create(config);
 	
+	//読み書きするBMIのデータを表すレコードです。
+	public static record Bmi(double mHeight, double kgWeight, double bmi, LocalDateTime createdDate) {
+	}
+	
 	public ArrayList<Bmi> getBmiList() {
 		try {
 			return jsonb.fromJson(Files.readString(Path.of(filePath)),
