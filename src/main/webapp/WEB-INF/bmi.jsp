@@ -11,6 +11,7 @@ var mes = ResourceBundle.getBundle("messages", locale);
 <html>
 <head>
 <meta charset="UTF-8">
+<link href="style.css" rel="stylesheet">
 <title><%= mes.getString("title") %></title>
 </head>
 <body>
@@ -18,12 +19,13 @@ var mes = ResourceBundle.getBundle("messages", locale);
     <%
         var current = (DisplayEntry) request.getAttribute("currentEntry");
 	%>
-    <form action="./" method="post">
-        <table>
+    <form action="./app" method="post">
+        <table id="calc">
             <tr>
                 <td><%= mes.getString("height") %></td>
                 <td><input size="7" type="text" name="height" value="<%= current.height() %>"></td>
                 <td><%= mes.getString("height_unit") %></td>
+                <td rowspan="3"><button><%=mes.getString("calc")%></button></td>
             </tr>
             <tr>
                 <td><%= mes.getString("weight") %></td>
@@ -32,12 +34,11 @@ var mes = ResourceBundle.getBundle("messages", locale);
             </tr>
 			<tr>
 			    <td>BMI</td>
-                <td><%= current.bmi() %></td>
-           	</tr>	
-		</table>
-        <button><%=mes.getString("calc")%></button>
+                <td id="result"><%= current.bmi() %></td>
+           	</tr>
+		</table>        
     </form>
-    <p style="color: red;">
+    <p id="error">
         <%= mes.getString((String) request.getAttribute("error")) %>
     </p>
     <p>
@@ -45,7 +46,7 @@ var mes = ResourceBundle.getBundle("messages", locale);
     </p>
     <h2><%= mes.getString("history") %></h2>
 
-    <table border="1">
+    <table id="history">
     	<thead>
     	    <tr>
     	    	<th><%= mes.getString("date") %></th>
