@@ -46,15 +46,6 @@ public class BmiServlet extends HttpServlet {
 
 			// データをViewに渡すため、リクエストスコープへセットします。
 			request.setAttribute("displayEntries", displayEntries);
-
-			// nullの場合は値を設定しておきます。
-			// doPost経由でdoGetが呼ばれたときは、nullでないことがあります。
-			if (request.getAttribute("error") == null) {
-				request.setAttribute("error", "no_error");
-			}
-			if (request.getAttribute("currentEntry") == null) {
-				request.setAttribute("currentEntry", new DisplayEntry("", "", "", ""));
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			request.setAttribute("error", "io_error");
@@ -64,6 +55,15 @@ public class BmiServlet extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 			request.setAttribute("error", "unknown_error");
+		} finally {
+			// nullの場合は値を設定しておきます。
+			// doPost経由でdoGetが呼ばれたときは、nullでないことがあります。
+			if (request.getAttribute("error") == null) {
+				request.setAttribute("error", "no_error");
+			}
+			if (request.getAttribute("currentEntry") == null) {
+				request.setAttribute("currentEntry", new DisplayEntry("", "", "", ""));
+			}
 		}
 		request.getRequestDispatcher("/WEB-INF/bmi.jsp").forward(request, response);
 	}
