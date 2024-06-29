@@ -64,7 +64,7 @@ public class BmiServlet extends HttpServlet {
 				request.setAttribute("error", "no_error");
 			}
 			if (request.getAttribute("currentEntry") == null) {
-				request.setAttribute("currentEntry", new DisplayEntry("", "", "", "", ""));
+				request.setAttribute("currentEntry", new DisplayEntry("", "", "", "", "no_category"));
 			}
 		}
 		request.getRequestDispatcher("/WEB-INF/bmi.jsp").forward(request, response);
