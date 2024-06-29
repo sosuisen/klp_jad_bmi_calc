@@ -22,7 +22,7 @@ public class BmiServlet extends HttpServlet {
 
 	// BMIに関する値をJSPへ渡すためだけに用いる表示用recordです。
 	// JSP側でimportするためpublic staticにしています。
-	public static record DisplayEntry(String height, String weight, String bmi, String createdDate) {
+	public static record DisplayEntry(String createdDate, String height, String weight, String bmi) {		
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -38,10 +38,10 @@ public class BmiServlet extends HttpServlet {
 			// 単位を変換して、日時から秒数を削除して、順序を新しい順にします。
 			List<DisplayEntry> displayEntries = bmiEntries.stream()
 					.map(entry -> new DisplayEntry(
-							String.format("%.1f", language.equals("en") ? entry.mHeight() * METER_FEET : entry.mHeight() ),
+							entry.createdDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+							String.format("%.1f", language.equals("en") ? entry.mHeight() * METER_FEET : entry.mHeight() * 100 ),
 							String.format("%.1f", language.equals("en") ? entry.kgWeight() * KG_POUNDS : entry.kgWeight() ),
-							String.format("%.1f", entry.bmi()),
-							entry.createdDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))))
+							String.format("%.1f", entry.bmi())))
 					.toList().reversed();
 
 			// データをViewに渡すため、リクエストスコープへセットします。
@@ -84,8 +84,8 @@ public class BmiServlet extends HttpServlet {
 			var bmi = model.calc(mHeight, kgWeight);
 			
 			// 入力と計算結果を表示するため、リクエストスコープにセットします。
-			var currentEntry = new DisplayEntry(String.valueOf(height), String.valueOf(weight),
-					String.format("%.1f", bmi), "");
+			var currentEntry = new DisplayEntry("", String.valueOf(height), String.valueOf(weight),
+					String.format("%.1f", bmi));
 			request.setAttribute("currentEntry", currentEntry);
 		} catch (NumberFormatException e) {
 			// 入力が数値でない場合に発生

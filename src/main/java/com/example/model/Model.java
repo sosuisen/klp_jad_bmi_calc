@@ -45,7 +45,7 @@ public class Model {
 
 	public double calc(double mHeight, double kgWeight) throws IOException, JsonbException {
 		var bmiValue = kgWeight / (mHeight * mHeight);
-		var bmi = new BmiEntry(mHeight, kgWeight, bmiValue, LocalDateTime.now());
+		var bmi = new BmiEntry(LocalDateTime.now(), mHeight, kgWeight, bmiValue);
 		save(bmi);
 		return bmiValue;
 	}
