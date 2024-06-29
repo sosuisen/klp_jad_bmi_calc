@@ -52,8 +52,9 @@ var mes = ResourceBundle.getBundle("messages", locale);
     	    <tr>
     	    	<th><%= mes.getString("date") %></th>
     	    	<th><%= mes.getString("height") %>(<%= mes.getString("height_unit") %>)</th>
-    	    	<th><%= mes.getString("weight") %>(<%= mes.getString("weight_unit") %>)</th>
+    	    	<th><%= mes.getString("weight") %>(<%= mes.getString("weight_unit") %>)</th>    	    	
     	    	<th>BMI</th>
+    	    	<th></th>
     	    </tr>
     	</thead>
         <%
