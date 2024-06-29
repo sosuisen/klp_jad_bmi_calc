@@ -17,10 +17,8 @@ var mes = java.util.ResourceBundle.getBundle("messages", locale);
 <body>
     <h1><%= mes.getString("title") %></h1>
     <%
-        var current = request.getAttribute("currentEntry") != null
-                ? (DisplayEntry) request.getAttribute("currentEntry")
-                : new DisplayEntry("", "", "", "");
-    %>
+        var current = (DisplayEntry) request.getAttribute("currentEntry");
+	%>
     <form action="./" method="post">
         <table>
             <tr>

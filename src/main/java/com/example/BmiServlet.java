@@ -46,9 +46,13 @@ public class BmiServlet extends HttpServlet {
 
 			// データをViewに渡すため、リクエストスコープへセットします。
 			request.setAttribute("displayEntries", displayEntries);
-			// doPostでエラーがあった場合はnullではありません。
+
+			// 下記、doPost経由でdoGetが呼ばれたときは、nullでないことがあります。
 			if (request.getAttribute("error") == null) {
 				request.setAttribute("error", "no_error");
+			}
+			if (request.getAttribute("currentEntry") == null) {
+				request.setAttribute("currentEntry", new DisplayEntry("", "", "", ""));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
