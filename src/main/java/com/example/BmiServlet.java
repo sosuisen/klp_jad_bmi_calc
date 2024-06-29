@@ -3,8 +3,6 @@ package com.example;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import com.example.model.Model;
 
@@ -26,14 +24,12 @@ public class BmiServlet extends HttpServlet {
 	// JSP側でimportするためpublic staticにしています。
 	public static record DisplayEntry(String height, String weight, String bmi, String createdDate) {
 	}
-	
-	private ResourceBundle getBundle(HttpServletRequest request) {
-		Locale locale = request.getLocale();
-		return ResourceBundle.getBundle("messages", locale);
-	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		String language = request.getLocale().getLanguage(); // ja, en など
+		System.out.println("language: " + language);
+		
 		try {
 			// Modelから過去の結果を取得します。
 			var bmiEntries = model.getBmiEntries();
@@ -41,8 +37,9 @@ public class BmiServlet extends HttpServlet {
 			// Modelから受け取ったデータをViewで表示しやすいよう加工するのは、Controllerの役割です。
 			// 単位を変換して、日時から秒数を削除して、順序を新しい順にします。
 			List<DisplayEntry> displayEntries = bmiEntries.stream()
-					.map(entry -> new DisplayEntry(String.format("%.1f", entry.mHeight() * METER_FEET),
-							String.format("%.1f", entry.kgWeight() * KG_POUNDS),
+					.map(entry -> new DisplayEntry(
+							String.format("%.1f", language.equals("en") ? entry.mHeight() * METER_FEET : entry.mHeight() ),
+							String.format("%.1f", language.equals("en") ? entry.kgWeight() * KG_POUNDS : entry.kgWeight() ),
 							String.format("%.1f", entry.bmi()),
 							entry.createdDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))))
 					.toList().reversed();
@@ -68,19 +65,21 @@ public class BmiServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		String language = request.getLocale().getLanguage(); // ja, en など
+
 		try {
-			var feetHeight = Double.parseDouble(request.getParameter("feetHeight"));
-			var poundsWeight = Double.parseDouble(request.getParameter("poundsWeight"));
+			var height = Double.parseDouble(request.getParameter("height"));
+			var weight = Double.parseDouble(request.getParameter("weight"));
 
 			// 単位変換	
-			var mHeight = feetHeight / METER_FEET;
-			var kgWeight = poundsWeight / KG_POUNDS;
+			var mHeight = language.equals("en") ? height / METER_FEET : height / 100;
+			var kgWeight = language.equals("en") ? weight / KG_POUNDS : weight;
 
 			// ModelのBMI計算機能を呼び出します。
 			var bmi = model.calc(mHeight, kgWeight);
 			
 			// 入力と計算結果を表示するため、リクエストスコープにセットします。
-			var currentEntry = new DisplayEntry(String.valueOf(feetHeight), String.valueOf(poundsWeight),
+			var currentEntry = new DisplayEntry(String.valueOf(height), String.valueOf(weight),
 					String.format("%.1f", bmi), "");
 			request.setAttribute("currentEntry", currentEntry);
 		} catch (NumberFormatException e) {
