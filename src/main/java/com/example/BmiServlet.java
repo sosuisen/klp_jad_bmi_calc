@@ -2,8 +2,10 @@ package com.example;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.example.model.HealthRecords.BmiEntry;
 import com.example.model.Model;
 
 import jakarta.servlet.ServletException;
@@ -19,6 +21,7 @@ public class BmiServlet extends HttpServlet {
 	private final double KG_POUNDS = 2.2046;
 
 	// BMIに関する値をJSPへ渡すためだけに用いる表示用recordです。
+	// 別のファイルに定義するほどのものではないので、このファイル内に記述しています。
 	// JSP側でimportするためpublic staticにしています。
 	public static record DisplayEntry(String height, String weight, String bmi, String createdDate) {
 	}
@@ -26,7 +29,7 @@ public class BmiServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// Modelから過去の結果を取得します。
-		var bmiEntries = model.getBmiEntries();
+		ArrayList<BmiEntry> bmiEntries = model.getBmiEntries();
 
 		// Modelから受け取ったデータをViewで表示しやすいよう加工するのは、Controllerの役割です。
 		// mをcmに変換して、日時から秒数を削除して、順序を新しい順にします。
