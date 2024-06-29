@@ -1,28 +1,77 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ page import="java.util.List" %>
-<%@ page import="com.example.BmiServlet.DisplayEntry" %>	
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.example.BmiServlet.DisplayEntry"%>
+
+<%
+// 別途、このプロジェクトのJavaのビルドパスに
+// src/main/resources を追加しておく必要があるため注意
+var locale = request.getLocale();
+var mes = java.util.ResourceBundle.getBundle("messages", locale);
+%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>BMI計算機</title>
+<title><%= mes.getString("title") %></title>
 </head>
 <body>
-	<h1>身長と体重を入力してください</h1>
-	<% var current = (DisplayEntry)request.getAttribute("currentEntry"); %>
-	<form action="./" method="post">
-	    身長(feet)：<input type="text" name="feetHeight" value="<%= current.height() %>"><br>
-		体重(pounds)：<input type="text" name="poundsWeight" value="<%= current.weight() %>"><br>
-		<button>計算</button><br
-	</form>
-	BMI：<%= current.bmi() %>
-	<h2>計算履歴</h2>
-	<ul>
-	<% var entries = (List<DisplayEntry>)request.getAttribute("displayEntries");
-	   for (var entry : entries) { %>
-		<li>[<%= entry.createdDate() %>] <%= entry.height() %>feet, <%= entry.weight() %> pound, BMI: <%= entry.bmi() %></li>
-	<% } %>
-	</ul>
+    <h1><%= mes.getString("title") %></h1>
+    <%
+        var current = (DisplayEntry) request.getAttribute("currentEntry");
+	%>
+    <form action="./" method="post">
+        <table>
+            <tr>
+                <td><%= mes.getString("height") %></td>
+                <td><input size="7" type="text" name="height" value="<%= current.height() %>"></td>
+                <td><%= mes.getString("height_unit") %></td>
+            </tr>
+            <tr>
+                <td><%= mes.getString("weight") %></td>
+                <td><input size="7" type="text" name="weight" value="<%= current.weight() %>"></td>
+                <td><%= mes.getString("weight_unit") %></td>
+            </tr>
+			<tr>
+			    <td>BMI</td>
+                <td><%= current.bmi() %></td>
+                <td><%= current.category() %></td>
+           	</tr>	
+		</table>
+        <button><%=mes.getString("calc")%></button>
+    </form>
+    <p style="color: red;">
+        <%= mes.getString((String) request.getAttribute("error")) %>
+    </p>
+    <p>
+        
+    </p>
+    <h2><%= mes.getString("history") %></h2>
+
+    <table border="1">
+    	<thead>
+    	    <tr>
+    	    	<th><%= mes.getString("date") %></th>
+    	    	<th><%= mes.getString("height") %>(<%= mes.getString("height_unit") %>)</th>
+    	    	<th><%= mes.getString("weight") %>(<%= mes.getString("weight_unit") %>)</th>
+    	    	<th>BMI</th>
+    	    </tr>
+    	</thead>
+        <%
+            var entries = (List<DisplayEntry>) request.getAttribute("displayEntries");
+            if (entries != null) {
+                for (var entry : entries) {
+        %>
+        <tr>
+            <td><%= entry.createdDate() %></td>
+            <td><%= entry.height() %></td>
+            <td><%= entry.weight() %></td>
+            <td><%= entry.bmi() %></td>
+            <td><%= entry.category() %></td>
+        </tr>
+        <%
+                }
+            }
+        %>
+    </table>
 </body>
 </html>
