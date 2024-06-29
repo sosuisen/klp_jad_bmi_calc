@@ -34,6 +34,7 @@ var mes = java.util.ResourceBundle.getBundle("messages", locale);
 			<tr>
 			    <td>BMI</td>
                 <td><%= current.bmi() %></td>
+                <td><%= current.category() %></td>
            	</tr>	
 		</table>
         <button><%=mes.getString("calc")%></button>
@@ -65,6 +66,7 @@ var mes = java.util.ResourceBundle.getBundle("messages", locale);
             <td><%= entry.height() %></td>
             <td><%= entry.weight() %></td>
             <td><%= entry.bmi() %></td>
+            <td><%= entry.category() %></td>
         </tr>
         <%
                 }

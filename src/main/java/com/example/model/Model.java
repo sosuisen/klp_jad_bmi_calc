@@ -49,4 +49,15 @@ public class Model {
 		save(bmi);
 		return bmiValue;
 	}
+	
+	public String getBmiCategory(double bmi) {
+		if (bmi < 18.5) {
+			return "underweight";
+		} else if (bmi < 25) {
+			return "normal";
+		} else {
+			return "obesity";
+		}
+	}
+	
 }
