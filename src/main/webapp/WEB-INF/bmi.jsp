@@ -41,9 +41,7 @@ var mes = ResourceBundle.getBundle("messages", locale);
     <p id="error">
         <%= mes.getString((String) request.getAttribute("error")) %>
     </p>
-    <p>
-        
-    </p>
+
     <h2><%= mes.getString("history") %></h2>
 
     <table id="history">
